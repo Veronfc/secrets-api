@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,7 +13,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -20,11 +21,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 class Secret {
-  private @Id @GeneratedValue Long id;
+  @JsonIgnore private @Id @GeneratedValue Long id;
   private String message;
   private @CreationTimestamp LocalDateTime createdAt;
-  private LocalDateTime expiresAt;
-  private @Setter Boolean viewed = false;
+  @JsonIgnore private LocalDateTime expiresAt;
 
   public Secret(String message, LocalDateTime expiresAt) {
     this.message = message;
