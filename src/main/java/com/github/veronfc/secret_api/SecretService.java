@@ -7,10 +7,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 class SecretService {
+  @Value("${encryptionSecret}") private String secret;
   Map<String, TemporalUnit> units = Map.of("S", ChronoUnit.SECONDS, "M", ChronoUnit.MINUTES, "H", ChronoUnit.HOURS);
 
   public LocalDateTime getExpiryDateTime(String expiresIn) {
@@ -29,5 +31,5 @@ class SecretService {
     }
 
     return LocalDateTime.now().plus(value, units.get(unit));
-  }
+  } 
 }

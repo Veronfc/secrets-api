@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 class SecretController {
   private SecretService service;
+  private EncryptionService encryption;
   private final SecretRepository repository;
 
-  SecretController(SecretRepository repository, SecretService service) {
+  SecretController(SecretRepository repository, SecretService service, EncryptionService encryption) {
     this.repository = repository;
     this.service = service;
+    this.encryption = encryption;
   }
 
   @GetMapping("/secrets")
