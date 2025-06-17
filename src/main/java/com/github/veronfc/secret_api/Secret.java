@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -21,9 +22,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 class Secret {
-  @JsonIgnore private @Id @GeneratedValue Long id;
-  private String message;
-  private @CreationTimestamp LocalDateTime createdAt;
+  @JsonIgnore @Id @GeneratedValue private Long id;
+  @Column(columnDefinition = "TEXT") private String message;
+  @CreationTimestamp private LocalDateTime createdAt;
   @JsonIgnore private LocalDateTime expiresAt;
 
   public Secret(String message, LocalDateTime expiresAt) {
