@@ -3,10 +3,13 @@ package com.github.veronfc.secret_api;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.Cookie;
@@ -25,24 +28,20 @@ class SecretController {
     this.encryption = encryption;
   }
 
-  @GetMapping("/secrets")
-  List<Secret> allSecrets() {
-    return repository.findAll();
-  }
-
   @GetMapping("/secret/{id}")
-  String retrieveSecret(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
+  String retrieveSecret(@PathVariable Long id, @RequestParam(required = false) String key, HttpServletRequest request, HttpServletResponse response) {
     Cookie[] cookies = request.getCookies();
-    String secretKey = "";
     
-    for (Cookie cookie: cookies) {
-      if (cookie.getName().equals(String.format("secret-%s-key", id))) {
-        secretKey = cookie.getValue();
-        break;
+    if (key == null) {
+      for (Cookie cookie: cookies) {
+        if (cookie.getName().equals(String.format("secret-%s-key", id))) {
+          key = cookie.getValue();
+          break;
+        }
       }
     }
 
-    if (secretKey.isBlank()) {
+    if (key == null || key.isBlank())  {
       throw new UnauthorizedException();
     }
 
@@ -58,11 +57,18 @@ class SecretController {
     //cookie.setSecure(true);
     cookie.setMaxAge(0);
 
-    repository.deleteById(secret.getId());
-
+    
     try {
-      return encryption.decryptMessage(secret.getMessage(), secretKey);
+      String message = encryption.decryptMessage(secret.getMessage(), key);
+      
+      repository.deleteById(secret.getId());
+
+      return message;
     } catch (Exception ex) {
+      if (ex instanceof BadPaddingException) {
+        throw new UnauthorizedException();
+      }
+
       throw new ServerException(ex.getMessage());
     }
   }
@@ -84,7 +90,7 @@ class SecretController {
       //cookie.setSecure(true);
       response.addCookie(cookie);
 
-      return String.format("Secret ID: %s", id);
+      return String.format("Secret ID: %s\nSecret key: %s", id, key);
     } catch (Exception ex) {
       throw new BadRequestException(ex.getMessage());
     }
