@@ -4,6 +4,7 @@
 A Spring Boot backend service for securely creating and retrieving **one-time secrets**. Think of it like a more secure pastebin: the secret is encrypted, delivered once, and then destroyed—no lingering data.
 <br/>
 <br/>
+
 ## 🚀 Summary
 Secrets API allows you to:
 - **Store a secret** and set a time-to-expire.
@@ -14,6 +15,7 @@ Secrets API allows you to:
 This is ideal for sharing **self-destructing secrets**, passwords, tokens, or any sensitive data exposure that requires zero retention.
 <br/>
 <br/>
+
 ## ✅ Key Features
 - **AES-256 encryption** of secrets at rest.
 - **One-time access**: upon retrieval, the secret is removed from storage.
@@ -23,6 +25,7 @@ This is ideal for sharing **self-destructing secrets**, passwords, tokens, or an
 - **Basic validation**, error handling, and status responses.
 <br/>
 <br/>
+
 ## 🛠️ Tech Stack & Dependencies
 - **Spring Boot** — Framework for building standalone production apps.
 - **Spring Web** — For building REST endpoints.
@@ -35,6 +38,7 @@ This is ideal for sharing **self-destructing secrets**, passwords, tokens, or an
 All encryption and session logic is **implemented manually**, with **no external dependencies beyond Spring Boot and JPA**.
 <br/>
 <br/>
+
 ## 📦 How to Run
 1. Clone the repo:
     ```zsh
